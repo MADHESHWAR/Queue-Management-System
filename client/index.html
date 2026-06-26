@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-Flow | Intelligent Queue Management System</title>
+  
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for modern aesthetic -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header>
+    <div class="header-container">
+      <div class="logo" id="logo-btn">
+        <i class="fa-solid fa-layer-group logo-icon"></i>
+        <span>Q-Flow</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="nav-link active" data-target="home-view"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="#" class="nav-link" data-target="customer-view"><i class="fa-solid fa-user"></i> Customer Portal</a></li>
+          <li><a href="#" class="nav-link" data-target="dashboard-view"><i class="fa-solid fa-desktop"></i> Public Display</a></li>
+          <li><a href="#" class="nav-link" data-target="admin-view" id="admin-nav-link"><i class="fa-solid fa-user-tie"></i> Admin Panel</a></li>
+        </ul>
+      </nav>
+      <div class="menu-toggle" id="mobile-menu">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Main Content Container -->
+  <main class="main-container">
+
+    <!-- 1. HOME VIEW -->
+    <section id="home-view" class="view-section active-view">
+      <div class="hero-section">
+        <h1>Intelligent Queue Management</h1>
+        <p>Minimize waiting times, increase customer satisfaction, and optimize service workflows with Q-Flow.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="switchView('customer-view')">
+            <i class="fa-solid fa-ticket"></i> Get a Token
+          </button>
+          <button class="btn btn-secondary btn-lg" onclick="switchView('dashboard-view')">
+            <i class="fa-solid fa-tv"></i> Live Display
+          </button>
+        </div>
+      </div>
+
+      <!-- Feature Cards Grid -->
+      <div class="features-grid">
+        <div class="feature-card" onclick="switchView('customer-view')">
+          <div class="feature-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+          <h3>Customer Portal</h3>
+          <p>Book tokens virtually, monitor live serving queues, and track your estimated wait time in real-time from any mobile device.</p>
+        </div>
+        <div class="feature-card" onclick="switchView('dashboard-view')">
+          <div class="feature-icon"><i class="fa-solid fa-desktop"></i></div>
+          <h3>Public Display Board</h3>
+          <p>High-visibility visual board displaying currently served tokens and upcoming queues for lobbies and waiting rooms.</p>
+        </div>
+        <div class="feature-card" onclick="switchView('admin-view')">
+          <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>Admin Control Console</h3>
+          <p>Secure dashboard enabling service representatives to call next customer, complete, skip, and reset the active queue.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2. CUSTOMER PORTAL VIEW -->
+    <section id="customer-view" class="view-section">
+      <!-- Token Registration Form -->
+      <div id="token-registration-container" class="form-container glass-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-ticket-simple"></i> Issue Virtual Token</h2>
+          <p>Enter your name below to obtain your sequence token.</p>
+        </div>
+        <form id="token-form">
+          <div class="form-group">
+            <label for="customerName">Your Full Name</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="customerName" placeholder="e.g. John Doe" required autocomplete="off">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">
+            <span>Generate Token</span> <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Active Ticket Status Display (Initially Hidden) -->
+      <div id="active-ticket-container" class="ticket-wrapper hidden">
+        <div class="ticket-card glass-card">
+          <div class="ticket-header">
+            <h3>Q-Flow Ticket</h3>
+            <span class="ticket-badge" id="my-ticket-status">Waiting</span>
+          </div>
+          
+          <div class="ticket-body">
+            <span class="ticket-label">YOUR TOKEN NUMBER</span>
+            <h1 class="ticket-number" id="my-token-number">--</h1>
+            
+            <div class="ticket-details-grid">
+              <div class="ticket-detail">
+                <span class="detail-label">Name</span>
+                <span class="detail-value" id="my-ticket-name">--</span>
+              </div>
+              <div class="ticket-detail">
+                <span class="detail-label">Created Time</span>
+                <span class="detail-value" id="my-ticket-time">--</span>
+              </div>
+            </div>
+            
+            <div class="ticket-stats-grid">
+              <div class="stat-box">
+                <i class="fa-solid fa-people-arrows"></i>
+                <span class="stat-number" id="my-queue-position">--</span>
+                <span class="stat-label">Queue Position</span>
+              </div>
+              <div class="stat-box">
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span class="stat-number" id="my-wait-time">-- mins</span>
+                <span class="stat-label">Est. Wait Time</span>
+              </div>
+            </div>
+            
+            <div class="current-serving-status">
+              <span class="serving-label">Currently Serving Token:</span>
+              <span class="serving-value" id="my-current-serving">--</span>
+            </div>
+          </div>
+          
+          <div class="ticket-footer">
+            <button class="btn btn-secondary btn-block" id="btn-leave-queue">
+              <i class="fa-solid fa-door-open"></i> Leave Queue
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 3. PUBLIC DISPLAY BOARD VIEW -->
+    <section id="dashboard-view" class="view-section">
+      <!-- High-visibility Queue Stats Cards -->
+      <div class="dashboard-stats-grid">
+        <div class="stat-card now-serving-highlight">
+          <div class="stat-header">
+            <span>NOW SERVING</span>
+            <i class="fa-solid fa-bell bell-pulse"></i>
+          </div>
+          <div class="stat-content">
+            <h1 id="pub-serving-number">--</h1>
+            <p id="pub-serving-name">No customer called yet</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>TOTAL WAITING</span>
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <h2 id="pub-waiting-count">0</h2>
+            <p>Customers in line</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>ESTIMATED WAIT</span>
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h2 id="pub-wait-time">0 mins</h2>
+            <p>Average waiting time</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Queue Board layout (Serving vs Upcoming) -->
+      <div class="display-board-grid">
+        <div class="upcoming-column glass-card">
+          <h2><i class="fa-solid fa-list-ol"></i> Upcoming Queue (Next in Line)</h2>
+          <div class="upcoming-list" id="pub-upcoming-list">
+            <div class="empty-state">
+              <i class="fa-solid fa-face-smile"></i>
+              <p>The queue is empty. No upcoming tokens.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 4. ADMIN PANEL VIEW -->
+    <section id="admin-view" class="view-section">
+      <!-- Admin Login Interface -->
+      <div id="admin-login-container" class="form-container glass-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-shield-halved"></i> Admin Authentication</h2>
+          <p>Login with security credentials to manage the queue.</p>
+        </div>
+        <form id="admin-login-form">
+          <div class="form-group">
+            <label for="adminUsername">Username</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="adminUsername" placeholder="e.g. admin" required autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="adminPassword" placeholder="••••••••" required autocomplete="off">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </button>
+        </form>
+      </div>
+
+      <!-- Admin Control Panel Dashboard (Initially Hidden) -->
+      <div id="admin-dashboard-container" class="admin-dashboard hidden">
+        <div class="admin-header-actions glass-card">
+          <div>
+            <h2>Admin Control Center</h2>
+            <p>Manage real-time queue flow and customer status.</p>
+          </div>
+          <div class="admin-action-buttons">
+            <button class="btn btn-accent btn-lg" id="btn-call-next">
+              <i class="fa-solid fa-bullhorn"></i> Call Next Customer
+            </button>
+            <button class="btn btn-danger" id="btn-reset-queue">
+              <i class="fa-solid fa-trash-can"></i> Reset Queue
+            </button>
+            <button class="btn btn-secondary" id="btn-admin-logout">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Stats Grid -->
+        <div class="admin-stats-summary">
+          <div class="admin-stat-card glass-card">
+            <h3>Currently Serving</h3>
+            <h2 id="admin-serving-number">--</h2>
+            <p id="admin-serving-name">No active customer</p>
+          </div>
+          <div class="admin-stat-card glass-card">
+            <h3>Total Waiting</h3>
+            <h2 id="admin-waiting-count">0</h2>
+            <p>Active tokens in queue</p>
+          </div>
+          <div class="admin-stat-card glass-card">
+            <h3>Total Tokens Today</h3>
+            <h2 id="admin-total-count">0</h2>
+            <p>Overall issued tickets</p>
+          </div>
+        </div>
+
+        <!-- Token Management Table -->
+        <div class="table-container glass-card">
+          <div class="table-header">
+            <h3><i class="fa-solid fa-table-list"></i> Active Tokens List</h3>
+            <div class="filter-controls">
+              <span class="filter-badge active" data-filter="all">All</span>
+              <span class="filter-badge" data-filter="Waiting">Waiting</span>
+              <span class="filter-badge" data-filter="Serving">Serving</span>
+              <span class="filter-badge" data-filter="Completed">Completed</span>
+              <span class="filter-badge" data-filter="Skipped">Skipped</span>
+            </div>
+          </div>
+          <div class="responsive-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Token #</th>
+                  <th>Customer Name</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-tokens-table-body">
+                <tr>
+                  <td colspan="5" class="table-empty">
+                    <i class="fa-solid fa-database"></i>
+                    <p>No tokens issued yet.</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Q-Flow Queue Management System. All rights reserved.</p>
+  </footer>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>
