@@ -2,12 +2,8 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://queue-management-system-1-sbfo.onrender.com/api/:path*"
-    },
-    {
       "source": "/:path*",
-      "destination": "/client/:path*"
+      "destination": "https://queue-management-system-1-sbfo.onrender.com/:path*"
     }
   ]
 }
