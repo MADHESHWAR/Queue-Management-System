@@ -1,9 +1,13 @@
 {
   "outputDirectory": "client",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://queue-management-system-1-sbfo.onrender.com/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://queue-management-system-1-sbfo.onrender.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
